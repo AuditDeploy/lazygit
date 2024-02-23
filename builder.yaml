@@ -1,0 +1,19 @@
+projectname: lazygit
+projectpath: ""
+projecttype: Go
+buildsdir: builder_builds
+buildtool: ""
+buildfile: ""
+prebuildcmd: ""
+configcmd: ""
+buildcmd: env CGO_ENABLED=0 GOOS=linux go build
+artifactlist: ""
+outputpath: ./artifact
+repobranch: ""
+appicon: ""
+docker:
+  dockerfile: BuilderDockerfile
+  registry: ""
+  version: ""
+push:
+  url: ""

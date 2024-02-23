@@ -1,0 +1,26 @@
+# run with:
+# docker build -t lazygit .
+# docker run -it lazygit:latest /bin/sh
+
+FROM golang:1.21 as build
+WORKDIR /go/src/github.com/jesseduffield/lazygit/
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+
+# Run Builder
+COPY builder /usr/local/bin/
+COPY builder.yaml ./
+RUN builder -d -v
+
+FROM alpine:3.15
+RUN apk add --no-cache -U git xdg-utils
+WORKDIR /go/src/github.com/jesseduffield/lazygit/
+COPY --from=build /go/src/github.com/jesseduffield/lazygit ./
+COPY --from=build /go/src/github.com/jesseduffield/lazygit/artifact/lazygit /bin/
+RUN echo "alias gg=lazygit" >> ~/.profile
+
+# For Builder use
+COPY --from=build /root/.builder/builds.json /root/.builder/builds.json
+
+ENTRYPOINT [ "lazygit" ]
